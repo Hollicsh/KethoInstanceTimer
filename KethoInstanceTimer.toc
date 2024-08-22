@@ -1,6 +1,6 @@
-## Interface: 100002
-## Interface-Wrath: 30400
-## Interface-Classic: 11403
+## Interface: 110002
+## Interface-Cata: 40400
+## Interface-Classic: 11503
 ## Version: @project-version@
 ## Title: KethoInstanceTimer
 ## Notes: Ketho's Instance Timer
