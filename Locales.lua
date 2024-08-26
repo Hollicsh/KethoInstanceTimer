@@ -7,7 +7,7 @@ local L = {
 		MANUAL_RESET = TRACKER_SORT_MANUAL.." "..RESET,
 		MANUAL_START = TRACKER_SORT_MANUAL.." "..START,
 		RECORD_DATA = "Record Data",
-		
+
 		TIME_FORMAT = "Time Format",
 		TIME_FORMAT_LEGACY = "Legacy Time Format",
 		TIME_OMIT_ZERO_VALUE = "Omit Zero Value",
@@ -15,7 +15,7 @@ local L = {
 		TIME_OMIT_SECONDS = "Omit "..SECONDS,
 		TIME_LOWER_CASE = "Lower Case",
 		TIME_ABBREVIATE = "Abbreviate",
-		
+
 		BROKER_LCLICK = "|cffFFFFFFLeft Click|r to toggle History",
 		BROKER_RCLICK = "|cffFFFFFFRight Click|r to toggle the options menu",
 		BROKER_SHIFT_CLICK = "|cffFFFFFFShift + Left Click|r to toggle this AddOn",
@@ -26,7 +26,7 @@ local L = {
 		MANUAL_RESET = "Manuell zurücksetzen",
 		MANUAL_START = "Manuell starten",
 		RECORD_DATA = "Daten speichern",
-		
+
 		BROKER_CLICK = "|cffFFFFFFKlickt|r, um das Optionsmenü zu öffnen",
 		BROKER_SHIFT_CLICK = "|cffFFFFFFShift-klickt|r, um dieses AddOn ein-/auszuschalten",
 	},
@@ -39,12 +39,11 @@ local L = {
 	itIT = {},
 	koKR = {},
 	ptBR = {},
-	ruRU = {INSTANCE_TIMER = "Таймер подземелья",
+	ruRU = {
+		INSTANCE_TIMER = "Таймер подземелья",
 		INSTANCE_TIMER_MSG = "[<INSTANCE>] пройден за <TIME> [<START>]-[<END>]",
-		MANUAL_RESET = TRACKER_SORT_MANUAL.." "..RESET,
-		MANUAL_START = TRACKER_SORT_MANUAL.." "..START,
 		RECORD_DATA = "Запись данных",
-		
+
 		TIME_FORMAT = "Формат времени",
 		TIME_FORMAT_LEGACY = "Устаревший формат времени",
 		TIME_OMIT_ZERO_VALUE = "Не использовать нулевое значение",
@@ -52,18 +51,18 @@ local L = {
 		TIME_OMIT_SECONDS = "Не использовать "..SECONDS,
 		TIME_LOWER_CASE = "Нижний регистр",
 		TIME_ABBREVIATE = "Сокращение",
-		
+
 		BROKER_LCLICK = "|cffFFFFFFЛКМ|r - открыть историю",
 		BROKER_RCLICK = "|cffFFFFFFПКМ|r - открыть настройки",
 		BROKER_SHIFT_CLICK = "|cffFFFFFFShift+ЛКМ|r - открыть аддон",
 		},
-	zhCN = {		
+	zhCN = {
 		INSTANCE_TIMER = "副本计时器",
 		INSTANCE_TIMER_MSG = "[<INSTANCE>] 已完成，用时 <TIME> [<START>]-[<END>]",
 		MANUAL_RESET = "手动重置",
 		MANUAL_START = "手动开始",
 		RECORD_DATA = "记录数据",
-		
+
 		BROKER_CLICK = "|cffFFFFFF点击|r打开选项菜单",
 		BROKER_SHIFT_CLICK = "|cffFFFFFFShift-点击|r 启用或禁用插件",
 	},
@@ -73,7 +72,7 @@ local L = {
 		MANUAL_RESET = "手動重置",
 		MANUAL_START = "手動開始",
 		RECORD_DATA = "紀錄數據",
-		
+
 		BROKER_CLICK = "|cffFFFFFF點擊|r打開選項菜單",
 		BROKER_SHIFT_CLICK = "|cffFFFFFFrShift-點擊|r 啟用或禁用插件",
 	},

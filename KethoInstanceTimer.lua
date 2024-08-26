@@ -1,8 +1,6 @@
 local NAME, S = ...
 
-local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetadata
-
-S.VERSION = GetAddOnMetadata(NAME, "Version")
+S.VERSION = C_AddOns.GetAddOnMetadata(NAME, "Version")
 S.BUILD = "Release"
 
 KethoInstanceTimer = LibStub("AceAddon-3.0"):NewAddon(NAME, "AceEvent-3.0", "AceConsole-3.0", "LibSink-2.0")
