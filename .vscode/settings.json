@@ -52,7 +52,9 @@
         "VIDEO_OPTIONS_ENABLED",
         "WOW_PROJECT_CLASSIC",
         "WOW_PROJECT_ID",
-        "ZONE"
+        "ZONE",
+        "ElvUI",
+        "KethoInstanceTimerDataScrollFrameScrollBar"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
