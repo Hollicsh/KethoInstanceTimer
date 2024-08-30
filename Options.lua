@@ -35,10 +35,10 @@ S.defaults = {
 		raid = true,
 		scenario = true,
 		InstanceTimerMsg = L.INSTANCE_TIMER_MSG,
-		
+
 		LegacyTime = true,
 		TimeMaxCount = 2,
-		
+
 		sink20OutputSink = "Channel",
 		sink20ScrollArea = GROUP,
 	},
@@ -230,7 +230,7 @@ function KIT:DataFrame()
 	if not KethoInstanceTimerData then
 		local f = CreateFrame("Frame", "KethoInstanceTimerData", UIParent, "DialogBoxFrame")
 		f:SetPoint("CENTER"); f:SetSize(1000, 500)
-		
+
 		f:SetBackdrop({
 			bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
 			edgeFile = "Interface\\PVPFrame\\UI-Character-PVP-Highlight", -- this one is neat
@@ -238,11 +238,11 @@ function KIT:DataFrame()
 			insets = { left = 8, right = 6, top = 8, bottom = 8 },
 		})
 		f:SetBackdropBorderColor(0, .44, .87, 0.5)
-		
+
 	---------------
 	--- Movable ---
 	---------------
-		
+
 		f:EnableMouse(true) -- also seems to be automatically enabled when setting the OnMouseDown script
 		f:SetMovable(true); f:SetClampedToScreen(true)
 		f:SetScript("OnMouseDown", function(self, button)
@@ -251,24 +251,24 @@ function KIT:DataFrame()
 			end
 		end)
 		f:SetScript("OnMouseUp", f.StopMovingOrSizing)
-		
+
 	-------------------
 	--- ScrollFrame ---
 	-------------------
-		
+
 		local sf = CreateFrame("ScrollFrame", "KethoInstanceTimerDataScrollFrame", KethoInstanceTimerData, "UIPanelScrollFrameTemplate")
 		sf:SetPoint("LEFT", 16, 0)
 		sf:SetPoint("RIGHT", -32, 0)
 		sf:SetPoint("TOP", 0, -16)
 		sf:SetPoint("BOTTOM", KethoInstanceTimerDataButton, "TOP", 0, 0)
-		
+
 	---------------
 	--- EditBox ---
 	---------------
-		
+
 		local eb = CreateFrame("EditBox", "KethoInstanceTimerDataEditBox", KethoInstanceTimerDataScrollFrame)
 		eb:SetSize(sf:GetSize()) -- seems inheriting the points won't automatically set the width/size
-		
+
 		eb:SetMultiLine(true)
 		eb:SetFontObject("ChatFontNormal")
 		eb:SetAutoFocus(false) -- make keyboard not automatically focused to this editbox
@@ -276,31 +276,31 @@ function KIT:DataFrame()
 			--self:ClearFocus()
 			f:Hide() -- rather hide, since we only use it for copying to clipboard
 		end)
-		
+
 		sf:SetScrollChild(eb)
-		
+
 	-----------------
 	--- Resizable ---
 	-----------------
-		
+
 		f:SetResizable(true)
 		if S.isRetail then
 			f:SetResizeBounds(150, 100)
 		else
 			f:SetMinResize(150, 100) -- at least show the "okay" button
 		end
-		
+
 		local rb = CreateFrame("Button", "KethoInstanceTimerDataResizeButton", KethoInstanceTimerData)
 		rb:SetPoint("BOTTOMRIGHT", -6, 7); rb:SetSize(16, 16)
-		
+
 		rb:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
 		rb:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
 		rb:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
-		
+
 		rb:SetScript("OnMouseDown", function(self, button)
 			if button == "LeftButton" then
 				f:StartSizing("BOTTOMRIGHT")
-				self:GetHighlightTexture():Hide() -- we only want to see the PushedTexture now 
+				self:GetHighlightTexture():Hide() -- we only want to see the PushedTexture now
 			end
 		end)
 		rb:SetScript("OnMouseUp", function(self, button)
@@ -308,41 +308,41 @@ function KIT:DataFrame()
 			self:GetHighlightTexture():Show()
 			eb:SetWidth(sf:GetWidth()) -- update editbox to the new scrollframe width
 		end)
-		
+
 	-------------
 	--- Realm ---
 	-------------
-		
+
 		local realm = CreateFrame("CheckButton", nil, KethoInstanceTimerData, "UICheckButtonTemplate")
 		realm:SetPoint("BOTTOMLEFT", 8, 7)
 		realm.text:SetText(REALM)
 		realm.text:SetFont("Fonts\\FRIZQT__.TTF", 16)
-		
+
 		realm:SetChecked(profile.Realm)
 		realm:SetScript("OnClick", function(self, button)
 			profile.Realm = self:GetChecked()
 			eb:SetText(KIT:GetData())
 		end)
-		
+
 	------------------
 	--- Difficulty ---
 	------------------
-		
+
 		local diff = CreateFrame("CheckButton", nil, KethoInstanceTimerData, "UICheckButtonTemplate")
 		diff:SetPoint("BOTTOMLEFT", 140, 7)
 		diff.text:SetText(DUNGEON_DIFFICULTY)
 		diff.text:SetFont("Fonts\\FRIZQT__.TTF", 16)
-		
+
 		diff:SetChecked(profile.Difficulty)
 		diff:SetScript("OnClick", function(self, button)
 			profile.Difficulty = self:GetChecked()
 			eb:SetText(KIT:GetData())
 		end)
-		
+
 	----------------------------------------
 	--- Skin for ElvUI if it's installed ---
 	----------------------------------------
-	
+
 		if ElvUI then
 			local S = ElvUI[1]:GetModule('Skins')
 			KethoInstanceTimerData:SetTemplate('Transparent')
@@ -351,12 +351,12 @@ function KIT:DataFrame()
 			S:HandleCheckBox(realm)
 			S:HandleCheckBox(diff)
 		end
-		
+
 		f:Show()
 	else
 		KethoInstanceTimerData:Show()
 	end
-	
+
 	ACD:Close(NAME) -- close the options panel, its in the way now
 	KethoInstanceTimerDataEditBox:SetText(self:GetData())
 	GameTooltip:Hide() -- most likely the popup frame will prevent the GameTooltip's OnLeave script from firing
@@ -365,16 +365,16 @@ end
 do
 	local t = {}
 	local realm = GetRealmName()
-	
+
 	function KIT:GetData()
 		for i = 1, 4 do
 			t[i] = t[i] or {}
 			wipe(t[i])
 		end
-		
+
 		for i = #char.TimeInstanceList, 1, -1 do
 			local l = char.TimeInstanceList[i]
-			
+
 			for j, v in ipairs(l.party) do
 				if profile.Realm then
 					t[3][j] = format("|cff%s%s|r-%s", S.classCache[v[3]], v[1], (v[2] == realm) and "|cffADFF2F"..v[2].."|r" or v[2])
@@ -383,23 +383,23 @@ do
 				end
 			end
 			local partyformat = next(t[3]) and " - %s" or "%s"
-			
+
 			-- instanceType and difficulty data were added in v0.7
 			local instanceColor = S.pve[l.instanceType or "party"]
-			
+
 			if profile.Difficulty and l.difficulty then
 				local diff = S.difficulty[l.difficulty] or UNKNOWN -- most pre-mop data is wrong now ..
-				
+
 				tinsert(t[4], format("%s |cffF6ADC6[%s]|r-|cffADFF2F[%s]|r |cff%s[%s]|r |cffFFFF00%s|r - %s"..partyformat,
 					l.date, l.start, l["end"], instanceColor, l.zone, diff, self:Time(l.time), strjoin(", ", unpack(t[3]))))
 			else
 				tinsert(t[4], format("%s |cffF6ADC6[%s]|r-|cffADFF2F[%s]|r |cff%s[%s]|r %s"..partyformat,
 					l.date, l.start, l["end"], instanceColor, l.zone, self:Time(l.time), strjoin(", ", unpack(t[3]))))
 			end
-			
+
 			wipe(t[3]) -- wipe for next iteration
 		end
-		
+
 		return strjoin("\n", unpack(t[4]))
 	end
 end

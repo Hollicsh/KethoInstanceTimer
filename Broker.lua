@@ -46,7 +46,7 @@ local function MilitaryTime(v)
 	local sec = floor(v) % 60
 	local minute = floor(v/60) % 60
 	local hour = floor(v/3600)
-	
+
 	if v >= 3600 then
 		return format("%02.f:%02.f:%02.f", hour, minute, sec)
 	else
