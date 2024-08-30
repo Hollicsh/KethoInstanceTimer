@@ -496,7 +496,7 @@ function KIT:Finalize()
 	end
 
 	if profile.Screenshot then
-		C_Timer.After(1, Screenshot)
+		C_Timer.After(1, function() Screenshot() end)
 	end
 
 	-- pause LibDataBroker display
