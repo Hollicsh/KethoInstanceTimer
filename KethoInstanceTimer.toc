@@ -1,4 +1,4 @@
-## Interface: 110002, 40400, 11503
+## Interface: 110007, 40401, 11505
 ## Version: @project-version@
 ## Title: KethoInstanceTimer
 ## Notes: Ketho's Instance Timer
