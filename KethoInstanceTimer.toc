@@ -1,7 +1,8 @@
-## Interface: 110107, 50500, 40402, 11507
+## Interface: 110200, 50500, 40402, 11507
 ## Version: @project-version@
 ## Title: KethoInstanceTimer
 ## Notes: Ketho's Instance Timer
+## Notes-ruRU: Показывает время, за которое были пройдены подземелья/сценарии/рейды и т.д.
 ## Author: Ketho @ EU-Boulderfist
 ## SavedVariables: KethoInstanceTimerDB
 ## OptionalDeps: Ace3, LibSink-2.0
