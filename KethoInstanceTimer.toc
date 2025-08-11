@@ -1,4 +1,4 @@
-## Interface: 110200, 50500, 40402, 11507
+## Interface: 110200, 50500, 11507
 ## Version: @project-version@
 ## Title: KethoInstanceTimer
 ## Notes: Ketho's Instance Timer
@@ -11,7 +11,7 @@
 ## X-Curse-Project-ID: 30054
 ## X-WoWI-ID: 19910
 
-## Category-enUS: Dungeons & Raids
+## Category: Dungeons & Raids
 ## Category-deDE: Dungeons & Schlachtzüge
 ## Category-esES: Mazmorras y bandas
 ## Category-esMX: Calabozos y bandas
