@@ -78,7 +78,7 @@ local L = {
 	},
 }
 
-L.esES = L.esMX -- instance strings are identical
+L.esES = L.esMX
 
 S.L = setmetatable(L[GetLocale()] or L.enUS, {__index = function(t, k)
 	local v = rawget(L.enUS, k) or k

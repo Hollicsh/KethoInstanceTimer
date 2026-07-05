@@ -98,7 +98,7 @@ function KIT:RefreshDB()
 	profile = self.db.profile
 	char = self.db.char
 
-	self:SetSinkStorage(profile) -- LibSink
+	self:SetSinkStorage(profile)
 
 	for i = 1, 2 do
 		self["RefreshDB"..i](self)
@@ -188,7 +188,6 @@ end
 local INSTANCE_RESET_SUCCESS = INSTANCE_RESET_SUCCESS:gsub("%%s", "")
 
 function KIT:CHAT_MSG_SYSTEM(event, msg)
-	-- left or kicked from group; or reset through ResetInstances()
 	if msg == ERR_LEFT_GROUP_YOU or msg == ERR_UNINVITE_YOU or strfind(msg, INSTANCE_RESET_SUCCESS) then
 		self:ResetTime(true)
 
@@ -211,7 +210,6 @@ function KIT:LFG_PROPOSAL_SUCCEEDED(event)
 end
 
 function KIT:SecondaryCompletion()
-	-- delay it a bit, so it doesn't react on the same time as boss death
 	C_Timer.After(1, function()
 		if char.timeInstance > 0 then
 			self:Record()

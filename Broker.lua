@@ -50,7 +50,7 @@ end
 local brokerTicker
 
 local function UpdateBroker()
-	if S.pvp[S.instance] then -- no idea about arena
+	if S.pvp[S.instance] then
 		local bgTime = GetBattlefieldInstanceRunTime() or 0
 		dataobject.text = MilitaryTime(bgTime / 1000)
 	else
@@ -61,9 +61,7 @@ local function UpdateBroker()
 end
 
 function KIT:StartBrokerTicker()
-	-- don't start twice
 	if brokerTicker then return end
-	-- update immediately then start the 1s ticker
 	UpdateBroker()
 	brokerTicker = C_Timer.NewTicker(1, UpdateBroker)
 end

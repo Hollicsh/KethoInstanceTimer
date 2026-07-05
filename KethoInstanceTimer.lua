@@ -56,7 +56,7 @@ S.pve = {
 	party = "A8A8FF",
 	raid = "FF7F00",
 	scenario = "FFFFFF",
-	seasonal = "FFD700", -- imaginary instance type
+	seasonal = "FFD700",
 }
 
 S.pvp = {
@@ -70,14 +70,14 @@ S.npc = {
 }
 
 S.garrison = {
-	[1152] = true, -- FW Horde Garrison Level 1
-	[1330] = true, -- FW Horde Garrison Level 2
-	[1153] = true, -- FW Horde Garrison Level 3
-	[1154] = true, -- FW Horde Garrison Level 4
-	[1158] = true, -- SMV Alliance Garrison Level 1
-	[1331] = true, -- SMV Alliance Garrison Level 2
-	[1159] = true, -- SMV Alliance Garrison Level 3
-	[1160] = true, -- SMV Alliance Garrison Level 4
+	[1152] = true,
+	[1330] = true,
+	[1153] = true,
+	[1154] = true,
+	[1158] = true,
+	[1331] = true,
+	[1159] = true,
+	[1160] = true,
 }
 
 S.difficulty = {}
@@ -89,108 +89,98 @@ if S.isRetail then
 end
 
 local normalRaid = {
-	[3] = true, -- "10 Player" raid
-	[4] = true, -- "25 Player" raid
-	[5] = true, -- "10 Player (Heroic)" raid
-	[6] = true, -- "25 Player (Heroic)" raid
-	[14] = true, -- "Normal" raid
-	[15] = true, -- "Heroic" raid
-	[16] = true, -- "Mythic" raid
+	[3] = true,
+	[4] = true,
+	[5] = true,
+	[6] = true,
+	[14] = true,
+	[15] = true,
+	[16] = true,
 }
 
 function S.IsNormalRaid()
 	return normalRaid[select(3, GetInstanceInfo())]
 end
 
-S.BossIDs = { -- untested
-	-- [60] Classic
-	[11502] = true, -- Ragnaros; Molten Core
-	[11583] = true, -- Nefarian; Blackwing Lair
-	[15339] = true, -- Ossirian the Unscarred; Ruins of Ahn'Qiraj
-	[15727] = true, -- C'Thun; Temple of Ahn'Qiraj
+S.BossIDs = {
+	[11502] = true,
+	[11583] = true,
+	[15339] = true,
+	[15727] = true,
 
-	-- [70] The Burning Crusade
-	[15690] = true, -- Prince Malchezaar; Karazhan
-	[17257] = true, -- Magtheridon; Hellfire Citadel: Magtheridon's Lair
-	[17968] = true, -- Archimonde; Caverns of Time: Hyjal Summit
-	[19044] = true, -- Gruul the Dragonkiller; Gruul's Lair
-	[19622] = true, -- Kael'thas Sunstrider; Tempest Keep: The Eye
-	[21212] = true, -- Lady Vashj; Coilfang Reservoir: Serpentshrine Cavern
-	[22917] = true, -- Illidan Stormrage; Black Temple
-	[25315] = true, -- Kil'jaeden; Sunwell Plateau
+	[15690] = true,
+	[17257] = true,
+	[17968] = true,
+	[19044] = true,
+	[19622] = true,
+	[21212] = true,
+	[22917] = true,
+	[25315] = true,
 
-	-- [80] Wrath of the Lich King
-	[10184] = true, -- Onyxia; Onyxia's Lair
-	[15990] = true, -- Kel'Thuzad; Naxxramas
-	[28859] = true, -- Malygos; The Nexus: The Eye of Eternity
-	[28860] = true, -- Sartharion; Wyrmrest Temple: The Obsidian Sanctum
-	[33288] = true, -- Yogg-Saron; Ulduar
-	[34564] = true, -- Anub'arak; Crusaders' Coliseum: Trial of the Crusader
-	[36597] = true, -- The Lich King; Icecrown Citadel
-	[38433] = true, -- Toravon the Ice Watcher; Vault of Archavon
-	[39863] = true, -- Halion; Wyrmrest Temple: The Ruby Sanctum
+	[10184] = true,
+	[15990] = true,
+	[28859] = true,
+	[28860] = true,
+	[33288] = true,
+	[34564] = true,
+	[36597] = true,
+	[38433] = true,
+	[39863] = true,
 
-	-- [85] Cataclysm
-	[41376] = true, -- Nefarian; Blackwing Descent
-	[43324] = true, -- Cho'gall; The Bastion of Twilight
-	[46753] = true, -- Al'Akir; Throne of the Four Winds
-	[52363] = true, -- Occu'thar; Baradin Hold
-	[52409] = true, -- Ragnaros; Firelands
-	[56173] = true, -- Deathwing (no death); Dragon Soul
+	[41376] = true,
+	[43324] = true,
+	[46753] = true,
+	[52363] = true,
+	[52409] = true,
+	[56173] = true,
 
-	-- [90] Mists of Pandaria
-	[60400] = true, -- Jan-xi; Mogu'shan Vaults
-	[60999] = true, -- Sha of Fear; Terrace of Endless Spring
-	[62837] = true, -- Grand Empress Shek'zeer; Heart of Fear
+	[60400] = true,
+	[60999] = true,
+	[62837] = true,
 
-	-- [100] Warlords of Draenor
-	[77428] = true, -- Imperator Mar'gok; Highmaul
-	[77325] = true, -- Blackhand; Blackrock Foundry
-	[91331] = true, -- Archimonde; Hellfire Citadel
+	[77428] = true,
+	[77325] = true,
+	[91331] = true,
 
-	-- [110] Legion (untested)
-	[102206] = true, -- Xavius; The Emerald Nightmare
-	[110533] = true, -- Gul'dan; The Nighthold
-	[114537] = true, -- Helya; Trial of Valor
-	[117269] = true, -- Kil'jaeden; Tomb of Sargeras
-	[124828] = true, -- Argus the Unmaker; Antorus, the Burning Throne
+	[102206] = true,
+	[110533] = true,
+	[114537] = true,
+	[117269] = true,
+	[124828] = true,
 
-	-- [120] Battle for Azeroth (untested)
-	[132998] = true, -- G'huun; Uldir
-	[149684] = true, -- Lady Jaina Proudmoore; Battle of Dazar'alor
-	[150397] = true, -- King Mechagon; Operation: Mechagon
-	[155126] = true, -- Queen Azshara; The Eternal Palace
+	[132998] = true,
+	[149684] = true,
+	[150397] = true,
+	[155126] = true,
 }
 
 S.ClassicBossIDs = {
-	[639] = true, -- Edwin VanCleef; Deadmines
-	[1716] = true, -- Bazil Thredd; Stormwind Stockade
-	[1853] = true, -- Darkmaster Gandling; Scholomance
-	[2748] = true, -- Archaedas; Uldaman
-	[3654] = true, -- Mutanus the Devourer; Wailing Caverns
-	[3977] = true, -- High Inquisitor Whitemane; Scarlet Monastery
-	[4275] = true, -- Archmage Arugal; Shadowfang Keep
-	[4421] = true, -- Charlga Razorflank; Razorfen Kraul
-	[4829] = true, -- Aku'mai; Blackfathom Deeps
-	[5709] = true, -- Shade of Eranikus; Sunken Temple
-	[7267] = true, -- Chief Ukorz Sandscalp; Zul'Farrak
-	[7358] = true, -- Amnennar the Coldbringer; Razorfen Downs
-	[7800] = true, -- Mekgineer Thermaplugg; Gnomeregan
-	[9019] = true, -- Emperor Dagran Thaurissan; Blackrock Depths
-	[9568] = L["Lower Blackrock Spire"], -- Overlord Wyrmthalak
-	[10363] = L["Upper Blackrock Spire"], -- General Drakkisath
-	[10813] = L["Stratholme - Main Gate"], -- Balnazzar
-	[10440] = L["Stratholme - Service Entrance"], -- Lord Aurius Rivendare
-	[11501] = true, -- King Gordok; Dire Maul
-	[11520] = true, -- Taragaman the Hungerer; Ragefire Chasm
-	[12201] = true, -- Princess Theradras; Maraudon
+	[639] = true,
+	[1716] = true,
+	[1853] = true,
+	[2748] = true,
+	[3654] = true,
+	[3977] = true,
+	[4275] = true,
+	[4421] = true,
+	[4829] = true,
+	[5709] = true,
+	[7267] = true,
+	[7358] = true,
+	[7800] = true,
+	[9019] = true,
+	[9568] = L["Lower Blackrock Spire"],
+	[10363] = L["Upper Blackrock Spire"],
+	[10813] = L["Stratholme - Main Gate"],
+	[10440] = L["Stratholme - Service Entrance"],
+	[11501] = true,
+	[11520] = true,
+	[12201] = true,
 }
 
--- /run for i = 1, GetNumRFDungeons() do print(GetRFDungeonInfo(i)) end
--- GetLFGDungeonInfo(i)
 S.DungeonName = {}
 
-function S.RemapDungeon() -- wait for init S.DungeonName
+function S.RemapDungeon()
 	S.DungeonIDs = {
 		[23682] = S.DungeonName[285],
 		[25740] = S.DungeonName[286],
@@ -219,14 +209,9 @@ function S.RemapDungeon() -- wait for init S.DungeonName
 		[10363] = S.DungeonName[330],
 		[77120] = S.DungeonName[860],
 
-		-- [85] Cataclysm
 		[55689] = S.DungeonName[416],
 		[56173] = S.DungeonName[417],
 
-		-- [90] Mists of Pandaria
-		-- ...
-
-		-- [100] Warlords of Draenor
 		[78491] = S.DungeonName[849],
 		[79015] = S.DungeonName[850],
 		[77428] = S.DungeonName[851],
@@ -244,8 +229,6 @@ function S.RemapDungeon() -- wait for init S.DungeonName
 		[91349] = S.DungeonName[985],
 		[91331] = S.DungeonName[986],
 
-		-- [110] Legion
-		-- ...
 	}
 end
 
@@ -424,7 +407,6 @@ function S.IsStopwatch()
 	return (profile.Stopwatch and S.instance ~= "none" and not S.IsGarrison())
 end
 
--- garrison instance type == "party"
 function S.IsGarrison()
 	local instanceID = select(8, GetInstanceInfo())
 	return S.garrison[instanceID]

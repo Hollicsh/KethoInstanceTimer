@@ -224,7 +224,7 @@ function KIT:DataFrame()
 		})
 		f:SetBackdropBorderColor(0, .44, .87, 0.5)
 
-		f:EnableMouse(true) -- also seems to be automatically enabled when setting the OnMouseDown script
+		f:EnableMouse(true)
 		f:SetMovable(true); f:SetClampedToScreen(true)
 		f:SetScript("OnMouseDown", function(self, button)
 			if button == "LeftButton" then
@@ -251,9 +251,8 @@ function KIT:DataFrame()
 
 		eb:SetMultiLine(true)
 		eb:SetFontObject("ChatFontNormal")
-		eb:SetAutoFocus(false) -- make keyboard not automatically focused to this editbox
+		eb:SetAutoFocus(false)
 		eb:SetScript("OnEscapePressed", function(self)
-			--self:ClearFocus()
 			f:Hide()
 		end)
 
@@ -263,7 +262,7 @@ function KIT:DataFrame()
 		if S.isRetail then
 			f:SetResizeBounds(150, 100)
 		else
-			f:SetMinResize(150, 100) -- at least show the "okay" button
+			f:SetMinResize(150, 100)
 		end
 
 		local rb = CreateFrame("Button", "KethoInstanceTimerDataResizeButton", KethoInstanceTimerData)
@@ -276,7 +275,7 @@ function KIT:DataFrame()
 		rb:SetScript("OnMouseDown", function(self, button)
 			if button == "LeftButton" then
 				f:StartSizing("BOTTOMRIGHT")
-				self:GetHighlightTexture():Hide() -- we only want to see the PushedTexture now
+				self:GetHighlightTexture():Hide()
 			end
 		end)
 		rb:SetScript("OnMouseUp", function(self, button)
@@ -321,9 +320,9 @@ function KIT:DataFrame()
 		KethoInstanceTimerData:Show()
 	end
 
-	ACD:Close(NAME) -- close the options panel, its in the way now
+	ACD:Close(NAME)
 	KethoInstanceTimerDataEditBox:SetText(self:GetData())
-	GameTooltip:Hide() -- most likely the popup frame will prevent the GameTooltip's OnLeave script from firing
+	GameTooltip:Hide()
 end
 
 do
@@ -351,7 +350,7 @@ do
 			local instanceColor = S.pve[l.instanceType or "party"]
 
 			if profile.Difficulty and l.difficulty then
-				local diff = S.difficulty[l.difficulty] or UNKNOWN -- most pre-mop data is wrong now ..
+				local diff = S.difficulty[l.difficulty] or UNKNOWN
 
 				tinsert(t[4], format("%s |cffF6ADC6[%s]|r-|cffADFF2F[%s]|r |cff%s[%s]|r |cffFFFF00%s|r - %s"..partyformat,
 					l.date, l.start, l["end"], instanceColor, l.zone, diff, self:Time(l.time), strjoin(", ", unpack(t[3]))))
@@ -360,7 +359,7 @@ do
 					l.date, l.start, l["end"], instanceColor, l.zone, self:Time(l.time), strjoin(", ", unpack(t[3]))))
 			end
 
-			wipe(t[3]) -- wipe for next iteration
+			wipe(t[3])
 		end
 
 		return strjoin("\n", unpack(t[4]))
