@@ -11,11 +11,6 @@ function KIT:RefreshDB2()
 	char = self.db.char
 end
 
-	---------------------
-	--- GlobalStrings ---
-	---------------------
-
--- remove "%d"
 local SECONDS_ABBR2 = gsub(SECONDS_ABBR, "%%d ", "")
 local MINUTES_ABBR2 = gsub(MINUTES_ABBR, "%%d ", "")
 local HOURS_ABBR2 = gsub(HOURS_ABBR, "%%d ", "")
@@ -24,10 +19,6 @@ local DAYS_ABBR2 = gsub(DAYS_ABBR, "%%d ", "")
 local arrow = "|cffF6ADC6->|r"
 local REALM = FRIENDS_LIST_REALM:gsub(":", "")
 S.crop = ":64:64:4:60:4:60"
-
-	---------------
-	--- Options ---
-	---------------
 
 S.defaults = {
 	profile = {
@@ -220,12 +211,6 @@ function KIT:LegacyTime()
 	return profile.LegacyTime
 end
 
-	-----------------
-	--- DataFrame ---
-	-----------------
-
--- I peeked into Prat's CopyChat code for the ScrollFrame & EditBox <.<
--- and FloatingChatFrameTemplate for the ResizeButton >.>
 function KIT:DataFrame()
 	if not KethoInstanceTimerData then
 		local f = CreateFrame("Frame", "KethoInstanceTimerData", UIParent, "DialogBoxFrame")
@@ -239,10 +224,6 @@ function KIT:DataFrame()
 		})
 		f:SetBackdropBorderColor(0, .44, .87, 0.5)
 
-	---------------
-	--- Movable ---
-	---------------
-
 		f:EnableMouse(true) -- also seems to be automatically enabled when setting the OnMouseDown script
 		f:SetMovable(true); f:SetClampedToScreen(true)
 		f:SetScript("OnMouseDown", function(self, button)
@@ -252,9 +233,11 @@ function KIT:DataFrame()
 		end)
 		f:SetScript("OnMouseUp", f.StopMovingOrSizing)
 
-	-------------------
-	--- ScrollFrame ---
-	-------------------
+		local btn = CreateFrame("Button", "KethoInstanceTimerDataButton", f, "UIPanelButtonTemplate")
+		btn:SetSize(120, 22)
+		btn:SetPoint("BOTTOMRIGHT", -16, 8)
+		btn:SetText(OKAY)
+		btn:SetScript("OnClick", function() f:Hide() end)
 
 		local sf = CreateFrame("ScrollFrame", "KethoInstanceTimerDataScrollFrame", KethoInstanceTimerData, "UIPanelScrollFrameTemplate")
 		sf:SetPoint("LEFT", 16, 0)
@@ -262,26 +245,19 @@ function KIT:DataFrame()
 		sf:SetPoint("TOP", 0, -16)
 		sf:SetPoint("BOTTOM", KethoInstanceTimerDataButton, "TOP", 0, 0)
 
-	---------------
-	--- EditBox ---
-	---------------
-
 		local eb = CreateFrame("EditBox", "KethoInstanceTimerDataEditBox", KethoInstanceTimerDataScrollFrame)
-		eb:SetSize(sf:GetSize()) -- seems inheriting the points won't automatically set the width/size
+		eb:SetPoint("TOPLEFT", sf, "TOPLEFT", 0, 0)
+		eb:SetPoint("BOTTOMRIGHT", sf, "BOTTOMRIGHT", 0, 0)
 
 		eb:SetMultiLine(true)
 		eb:SetFontObject("ChatFontNormal")
 		eb:SetAutoFocus(false) -- make keyboard not automatically focused to this editbox
 		eb:SetScript("OnEscapePressed", function(self)
 			--self:ClearFocus()
-			f:Hide() -- rather hide, since we only use it for copying to clipboard
+			f:Hide()
 		end)
 
 		sf:SetScrollChild(eb)
-
-	-----------------
-	--- Resizable ---
-	-----------------
 
 		f:SetResizable(true)
 		if S.isRetail then
@@ -306,12 +282,8 @@ function KIT:DataFrame()
 		rb:SetScript("OnMouseUp", function(self, button)
 			f:StopMovingOrSizing()
 			self:GetHighlightTexture():Show()
-			eb:SetWidth(sf:GetWidth()) -- update editbox to the new scrollframe width
+			KethoInstanceTimerDataEditBox:SetWidth(KethoInstanceTimerDataScrollFrame:GetWidth())
 		end)
-
-	-------------
-	--- Realm ---
-	-------------
 
 		local realm = CreateFrame("CheckButton", nil, KethoInstanceTimerData, "UICheckButtonTemplate")
 		realm:SetPoint("BOTTOMLEFT", 8, 7)
@@ -324,10 +296,6 @@ function KIT:DataFrame()
 			eb:SetText(KIT:GetData())
 		end)
 
-	------------------
-	--- Difficulty ---
-	------------------
-
 		local diff = CreateFrame("CheckButton", nil, KethoInstanceTimerData, "UICheckButtonTemplate")
 		diff:SetPoint("BOTTOMLEFT", 140, 7)
 		diff.text:SetText(DUNGEON_DIFFICULTY)
@@ -338,10 +306,6 @@ function KIT:DataFrame()
 			profile.Difficulty = self:GetChecked()
 			eb:SetText(KIT:GetData())
 		end)
-
-	----------------------------------------
-	--- Skin for ElvUI if it's installed ---
-	----------------------------------------
 
 		if ElvUI then
 			local S = ElvUI[1]:GetModule('Skins')
@@ -384,7 +348,6 @@ do
 			end
 			local partyformat = next(t[3]) and " - %s" or "%s"
 
-			-- instanceType and difficulty data were added in v0.7
 			local instanceColor = S.pve[l.instanceType or "party"]
 
 			if profile.Difficulty and l.difficulty then
