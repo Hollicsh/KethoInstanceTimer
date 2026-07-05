@@ -1,7 +1,17 @@
 ---@diagnostic disable: undefined-field
 local NAME, S = ...
 
-S.VERSION = C_AddOns.GetAddOnMetadata(NAME, "Version")
+local function SafeGetAddOnMetadata(name, key)
+	if C_AddOns and C_AddOns.GetAddOnMetadata then
+		return C_AddOns.GetAddOnMetadata(name, key)
+	elseif GetAddOnMetadata then
+		return GetAddOnMetadata(name, key)
+	else
+		return "Unknown"
+	end
+end
+
+S.VERSION = SafeGetAddOnMetadata(NAME, "Version")
 S.BUILD = "Release"
 
 KethoInstanceTimer = LibStub("AceAddon-3.0"):NewAddon(NAME, "AceEvent-3.0", "AceConsole-3.0", "LibSink-2.0")
@@ -25,9 +35,9 @@ local format, gsub = format, gsub
 S.args = {}
 local args = S.args
 
-	--------------
-	--- Events ---
-	--------------
+--------------
+--- Events ---
+--------------
 
 S.Events = {
 	"PLAYER_ENTERING_WORLD",
@@ -46,9 +56,9 @@ S.ClassicEvents = {
 	"CHAT_MSG_SYSTEM",
 }
 
-	----------------------
-	--- Instance Types ---
-	----------------------
+----------------------
+--- Instance Types ---
+----------------------
 
 -- also used for color
 S.pve = {
@@ -105,9 +115,9 @@ function S.IsNormalRaid()
 	return normalRaid[select(3, GetInstanceInfo())]
 end
 
-	--------------
-	--- Bosses ---
-	--------------
+--------------
+--- Bosses ---
+--------------
 
 -- all normal dungeons are a scenario now
 -- there is no need to check for those specific boss deaths, since the fallback events will fire
@@ -320,9 +330,9 @@ function S.CheckMultiple(v)
 	return true
 end
 
-	---------------------
-	--- Instance Time ---
-	---------------------
+---------------------
+--- Instance Time ---
+---------------------
 
 function KIT:StartData()
 	local serverTime = GetServerTime()
@@ -344,9 +354,9 @@ function KIT:ResetTime(isLeave)
 	end
 end
 
-	------------
-	--- Time ---
-	------------
+------------
+--- Time ---
+------------
 
 function KIT:SecondsTime(v)
 	return SecondsToTime(v, profile.TimeOmitSec, not profile.TimeAbbrev, profile.TimeMaxCount)
@@ -408,9 +418,9 @@ do
 	end
 end
 
-	---------------------------
-	--- Time Format Example ---
-	---------------------------
+---------------------------
+--- Time Format Example ---
+---------------------------
 
 do
 	local tday, thour, tmin, tsec = random(9), random(23), random(59), random(59)
@@ -425,9 +435,9 @@ do
 	S.TimeOmitZero = 3600*thour
 end
 
-	-----------------
-	--- Stopwatch ---
-	-----------------
+-----------------
+--- Stopwatch ---
+-----------------
 
 function S.StopwatchStart()
 	if S.pve[S.instance] then
@@ -467,12 +477,18 @@ function S.IsGarrison()
 	return S.garrison[instanceID]
 end
 
-	--------------------
-	--- Class Colors ---
-	--------------------
+--------------------
+--- Class Colors ---
+--------------------
 
 S.classCache = setmetatable({}, {__index = function(t, k)
-	local color = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[k]
+	local colorTable = CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS
+	local color = colorTable and colorTable[k]
+	if not color then
+		-- fallback to white if colors are not available
+		rawset(t, k, "FFFFFF")
+		return "FFFFFF"
+	end
 	local v = format("%02X%02X%02X", color.r*255, color.g*255, color.b*255)
 	rawset(t, k, v)
 	return v
@@ -482,9 +498,9 @@ function KIT:WipeCache()
 	wipe(S.classCache)
 end
 
-	------------
-	--- Rest ---
-	------------
+------------
+--- Rest ---
+------------
 
 function KIT:Zone()
 	return GetRealZoneText() or GetSubZoneText() or ZONE
@@ -507,9 +523,9 @@ function KIT:Finalize()
 	wipe(S.MultipleCache)
 end
 
-	--------------
-	--- Record ---
-	--------------
+--------------
+--- Record ---
+--------------
 
 -- Save Instance Timer data
 function KIT:Record(zoneName)
@@ -540,9 +556,9 @@ function KIT:Record(zoneName)
 	})
 end
 
-	---------------
-	--- Replace ---
-	---------------
+---------------
+--- Replace ---
+---------------
 
 local function ReplaceArgs(msg, args)
 	-- new random messages init as nil
@@ -562,9 +578,9 @@ local function ReplaceArgs(msg, args)
 	return msg
 end
 
-	--------------
-	--- Report ---
-	--------------
+--------------
+--- Report ---
+--------------
 
 local exampleTime = random(3600)
 
