@@ -9,10 +9,6 @@ local options = S.options
 
 local profile, char
 
-	---------------------------
-	--- Ace3 Initialization ---
-	---------------------------
-
 function KIT:OnInitialize()
 	self.db = LibStub("AceDB-3.0"):New("KethoInstanceTimerDB", S.defaults, true)
 
@@ -35,12 +31,7 @@ function KIT:OnInitialize()
 	ACD:AddToBlizOptions(NAME, NAME)
 	ACD:SetDefaultSize(NAME, 550, 430)
 
-	---------------------
-	--- Dungeon Names ---
-	---------------------
-
 	if S.isRetail then
-		-- grab the localized names from the dungeon finder
 		for i = 1, GetNumRFDungeons() do
 			local id, name = GetRFDungeonInfo(i)
 			S.DungeonName[id] = name
@@ -53,21 +44,12 @@ function KIT:OnInitialize()
 
 	S.RemapDungeon()
 
-	----------------------
-	--- Slash Commands ---
-	----------------------
-
 	for _, v in ipairs({"kit", "kethoinstance", "kethoinstancetimer"}) do
 		self:RegisterChatCommand(v, "SlashCommand")
 	end
 
-	-----------------------------
-	--- Custom SavedVariables ---
-	-----------------------------
-
 	char.TimeInstanceList = char.TimeInstanceList or {}
 
-	-- time data should be preserved between every /reload
 	char.timeInstance = char.timeInstance or 0
 	char.startDate = char.startDate or ""
 	char.startTime = char.startTime or ""
@@ -78,24 +60,29 @@ function KIT:OnEnable()
 		self:RegisterEvent(v)
 	end
 
-	-- support [Class Colors] by Phanx
 	if CUSTOM_CLASS_COLORS then
 		CUSTOM_CLASS_COLORS:RegisterCallback("WipeCache", self)
 	end
 
-	-- player is not in a group (anymore) -> reset timer
 	if not IsInGroup() then
 		self:ResetTime(true)
 	end
 
-	-- initialize stopwatch while in an instance
 	if S.IsStopwatch() then
 		S.instance = select(2, IsInInstance())
 		S.StopwatchStart()
 	end
+
+	if self.StartBrokerTicker then
+		self:StartBrokerTicker()
+	end
 end
 
 function KIT:OnDisable()
+	if self.CancelBrokerTicker then
+		self:CancelBrokerTicker()
+	end
+
 	self:UnregisterAllEvents()
 
 	if CUSTOM_CLASS_COLORS then
@@ -113,7 +100,6 @@ function KIT:RefreshDB()
 
 	self:SetSinkStorage(profile) -- LibSink
 
-	-- update table references in other files
 	for i = 1, 2 do
 		self["RefreshDB"..i](self)
 	end
@@ -147,10 +133,6 @@ function KIT:SlashCommand(input)
 	end
 end
 
-	-------------
-	--- Start ---
-	-------------
-
 function KIT:PLAYER_ENTERING_WORLD(event)
 	S.instance = select(2, IsInInstance())
 
@@ -158,9 +140,7 @@ function KIT:PLAYER_ENTERING_WORLD(event)
 	S.mapinstance = select(8, GetInstanceInfo())
 
 	if S.pve[S.instance] and not S.IsGarrison() then
-		-- zoned from an instance to a different instance
 		local changedInstances = prevInstance and prevInstance ~= S.mapinstance
-		-- entered instance
 		if char.timeInstance == 0 or changedInstances then
 			self:StartData()
 		end
@@ -168,11 +148,8 @@ function KIT:PLAYER_ENTERING_WORLD(event)
 		if S.IsStopwatch() then
 			S.StopwatchStart()
 		end
-	-- player is outside of the instance and player is alone or not in an (instance group == premade)
-	--- still have no idea if the "home" group can change into an "instance" group on entering and vice versa on leaving
-	--- hopefully it does, otherwise this is bad..
+
 	elseif (S.instance == "none" or S.IsGarrison()) and not IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
-		-- left instance
 		self:ResetTime(true)
 
 		if profile.Stopwatch then
@@ -180,10 +157,6 @@ function KIT:PLAYER_ENTERING_WORLD(event)
 		end
 	end
 end
-
-	-----------
-	--- End ---
-	-----------
 
 function KIT:COMBAT_LOG_EVENT_UNFILTERED(event)
 	local timestamp, subevent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags = CombatLogGetCurrentEventInfo()
@@ -194,22 +167,16 @@ function KIT:COMBAT_LOG_EVENT_UNFILTERED(event)
 	npcId = tonumber(npcId)
 
 	local hasBossID = S.isRetail and S.BossIDs[npcId] or S.ClassicBossIDs[npcId]
-	-- dont report raid finder in normal/heroic/mythic raids
-	-- note that we still want to report in dungeons like maraudon and seasonal
 	local name = not S.IsNormalRaid() and S.DungeonIDs[npcId] or hasBossID
 
 	if S.npc[unitType] and name and char.timeInstance > 0 then
 
-		-- boss fights with multiple npcs
 		if S.Multiple[npcId] and not S.CheckMultiple(npcId) then return end
 
-		-- if its raid finder/seasonal, get specific name, otherwise fall back to zone
 		local name = (type(name) == "string") and name
 
-		-- Record
 		self:Record(name)
 
-		-- Report
 		if profile[S.instance] then
 			self:Pour(self:InstanceText(nil, name))
 		end
@@ -218,11 +185,6 @@ function KIT:COMBAT_LOG_EVENT_UNFILTERED(event)
 	end
 end
 
-	---------------------
-	--- Leave / Reset ---
-	---------------------
-
--- dunno how to find a string consisting of 2 words, with just %s
 local INSTANCE_RESET_SUCCESS = INSTANCE_RESET_SUCCESS:gsub("%%s", "")
 
 function KIT:CHAT_MSG_SYSTEM(event, msg)
@@ -236,10 +198,6 @@ function KIT:CHAT_MSG_SYSTEM(event, msg)
 	end
 end
 
-	-----------------------
-	--- Secondary Start ---
-	-----------------------
-
 function KIT:LFG_PROPOSAL_SUCCEEDED(event)
 	C_Timer.After(20, function()
 		if char.timeInstance == 0 then
@@ -251,10 +209,6 @@ function KIT:LFG_PROPOSAL_SUCCEEDED(event)
 		end
 	end)
 end
-
-	---------------------
-	--- Secondary End ---
-	---------------------
 
 function KIT:SecondaryCompletion()
 	-- delay it a bit, so it doesn't react on the same time as boss death
@@ -271,12 +225,10 @@ function KIT:SecondaryCompletion()
 	end)
 end
 
--- only fires after completing a random dungeon
 function KIT:LFG_COMPLETION_REWARD(event)
 	self:SecondaryCompletion()
 end
 
--- scenarios and instances (since WoD)
 function KIT:SCENARIO_COMPLETED(event)
 	self:SecondaryCompletion()
 end
