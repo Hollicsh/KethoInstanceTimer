@@ -16,7 +16,7 @@ S.BUILD = "Release"
 
 KethoInstanceTimer = LibStub("AceAddon-3.0"):NewAddon(NAME, "AceEvent-3.0", "AceConsole-3.0", "LibSink-2.0")
 local KIT = KethoInstanceTimer
-KIT.S = S -- debug purpose
+KIT.S = S
 
 S.isRetail = (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE)
 
@@ -35,16 +35,12 @@ local format, gsub = format, gsub
 S.args = {}
 local args = S.args
 
---------------
---- Events ---
---------------
 
 S.Events = {
 	"PLAYER_ENTERING_WORLD",
 	"COMBAT_LOG_EVENT_UNFILTERED",
 	"CHAT_MSG_SYSTEM",
 
-	-- fallback/secondary events
 	"LFG_PROPOSAL_SUCCEEDED",
 	"LFG_COMPLETION_REWARD",
 	"SCENARIO_COMPLETED",
@@ -56,11 +52,6 @@ S.ClassicEvents = {
 	"CHAT_MSG_SYSTEM",
 }
 
-----------------------
---- Instance Types ---
-----------------------
-
--- also used for color
 S.pve = {
 	party = "A8A8FF",
 	raid = "FF7F00",
@@ -78,8 +69,6 @@ S.npc = {
 	Vehicle = true,
 }
 
--- garrison is classified as a "party" instancetype, which is a false positive for us
--- http://wow.gamepedia.com/InstanceMapID#Garrisons
 S.garrison = {
 	[1152] = true, -- FW Horde Garrison Level 1
 	[1330] = true, -- FW Horde Garrison Level 2
@@ -91,8 +80,6 @@ S.garrison = {
 	[1160] = true, -- SMV Alliance Garrison Level 4
 }
 
--- http://wow.gamepedia.com/DifficultyID
--- GetDifficultyInfo(difficultyID)
 S.difficulty = {}
 
 if S.isRetail then
@@ -115,12 +102,6 @@ function S.IsNormalRaid()
 	return normalRaid[select(3, GetInstanceInfo())]
 end
 
---------------
---- Bosses ---
---------------
-
--- all normal dungeons are a scenario now
--- there is no need to check for those specific boss deaths, since the fallback events will fire
 S.BossIDs = { -- untested
 	-- [60] Classic
 	[11502] = true, -- Ragnaros; Molten Core
@@ -209,65 +190,59 @@ S.ClassicBossIDs = {
 -- GetLFGDungeonInfo(i)
 S.DungeonName = {}
 
--- remap boss id to localized dungeon names
 function S.RemapDungeon() -- wait for init S.DungeonName
 	S.DungeonIDs = {
-		-- Seasonal
-		[23682] = S.DungeonName[285], -- "The Headless Horseman"; "Headless Horseman"; Hallow's End
-		[25740] = S.DungeonName[286], -- "The Frost Lord Ahune"; "Ahune"; Midsummer Fire Festival; transforms into "Frozen Core"
-		[25865] = S.DungeonName[286], -- "The Frost Lord Ahune"; "Frozen Core"; Midsummer Fire Festival
-		[23872] = S.DungeonName[287], -- "Coren Direbrew", Brewfest
-		[36296] = S.DungeonName[288], -- "The Crown Chemical Co."; "Apothecary Hummel"; Love is in the Air
-		[36565] = S.DungeonName[288], -- "The Crown Chemical Co."; "Apothecary Baxter"; Love is in the Air
-		[36272] = S.DungeonName[288], -- "The Crown Chemical Co."; "Apothecary Frye"; Love is in the Air
+		[23682] = S.DungeonName[285],
+		[25740] = S.DungeonName[286],
+		[25865] = S.DungeonName[286],
+		[23872] = S.DungeonName[287],
+		[36296] = S.DungeonName[288],
+		[36565] = S.DungeonName[288],
+		[36272] = S.DungeonName[288],
 
 		-- Multiple Parts Dungeon
-		[12258] = S.DungeonName[26], -- "Maraudon - Foulspore Cavern"; Razorlash
-		[12236] = S.DungeonName[272], -- "Maraudon - The Wicked Grotto"; Lord Vyletongue
-		[12201] = S.DungeonName[273], -- "Maraudon - Earth Song Falls"; Princess Theradras
+		[12258] = S.DungeonName[26],
+		[12236] = S.DungeonName[272],
+		[12201] = S.DungeonName[273],
 
-		[9018] = S.DungeonName[30], -- "Blackrock Depths - Detention Block"; High Interrogator Gerstahn
-		[9019] = S.DungeonName[276], -- "Blackrock Depths - Upper City"; Emperor Dagran Thaurissan
+		[9018] = S.DungeonName[30],
+		[9019] = S.DungeonName[276],
 
-		[11486] = S.DungeonName[36], -- "Dire Maul - Capital Gardens"; Prince Tortheldrin
-		[11492] = S.DungeonName[34], -- "Dire Maul - Warpwood Quarter"; Alzzin the Wildshaper
-		[11501] = S.DungeonName[38], -- "Dire Maul - Gordok Commons"; King Gordok
+		[11486] = S.DungeonName[36],
+		[11492] = S.DungeonName[34],
+		[11501] = S.DungeonName[38],
 
-		[10813] = S.DungeonName[40], -- "Stratholme - Main Gate"; Balnazzar
-		[45412] = S.DungeonName[274], -- "Stratholme - Service Entrance"; Lord Aurius Rivendare
+		[10813] = S.DungeonName[40],
+		[45412] = S.DungeonName[274],
 
-		[9568] = S.DungeonName[32], -- "Lower Blackrock Spire"; Overlord Wyrmthalak
-		[10363] = S.DungeonName[330], -- "Upper Blackrock Spire"; General Drakkisath
-		[77120] = S.DungeonName[860], -- "Upper Blackrock Spire" (WoD); Warlord Zaela
+		[9568] = S.DungeonName[32],
+		[10363] = S.DungeonName[330],
+		[77120] = S.DungeonName[860],
 
 		-- [85] Cataclysm
-		-- Dragon Soul
-		[55689] = S.DungeonName[416], -- "The Siege of Wyrmrest Temple"; Hagara the Stormbinder
-		[56173] = S.DungeonName[417], -- "Fall of Deathwing"; Deathwing (no death)
+		[55689] = S.DungeonName[416],
+		[56173] = S.DungeonName[417],
 
 		-- [90] Mists of Pandaria
 		-- ...
 
 		-- [100] Warlords of Draenor
-		-- Highmaul
-		[78491] = S.DungeonName[849], -- "Walled City"; Brackenspore
-		[79015] = S.DungeonName[850], -- "Arcane Sanctum"; Ko'ragh
-		[77428] = S.DungeonName[851], -- "Imperator's Rise"; Imperator Mar'gok
+		[78491] = S.DungeonName[849],
+		[79015] = S.DungeonName[850],
+		[77428] = S.DungeonName[851],
 
-		-- Blackrock Foundry
-		[76806] = S.DungeonName[847], -- "Slagworks"; "Heart of the Mountain" (Blast Furnace)
-		[77692] = S.DungeonName[846], -- "The Black Forge"; "Kromog"
-		[77557] = S.DungeonName[848], -- "Iron Assembly"; "Admiral Gar'an"
-		[77231] = S.DungeonName[848], -- "Iron Assembly"; "Enforcer Sorka"
-		[77477] = S.DungeonName[848], -- "Iron Assembly"; "Marak the Blooded"
-		[77325] = S.DungeonName[823], -- "Blackhand's Crucible"; "Blackhand"
+		[76806] = S.DungeonName[847],
+		[77692] = S.DungeonName[846],
+		[77557] = S.DungeonName[848],
+		[77231] = S.DungeonName[848],
+		[77477] = S.DungeonName[848],
+		[77325] = S.DungeonName[823],
 
-		-- Hellfire Citadel
-		[90435] = S.DungeonName[982], -- "Hellbreach"; "Kormrok"
-		[91809] = S.DungeonName[983], -- "Halls of Blood"; "Gorefiend"
-		[93439] = S.DungeonName[984], -- "Bastion of Shadows"; "Tyrant Velhari"
-		[91349] = S.DungeonName[985], -- "Destructor's Rise"; "Mannoroth"
-		[91331] = S.DungeonName[986], -- "The Black Gate"; "Archimonde"
+		[90435] = S.DungeonName[982],
+		[91809] = S.DungeonName[983],
+		[93439] = S.DungeonName[984],
+		[91349] = S.DungeonName[985],
+		[91331] = S.DungeonName[986],
 
 		-- [110] Legion
 		-- ...
@@ -275,42 +250,42 @@ function S.RemapDungeon() -- wait for init S.DungeonName
 end
 
 S.SpecialDungeon = {
-	[285] = true, -- "The Headless Horseman"; Hallow's End
-	[286] = true, -- "The Frost Lord Ahune"; Midsummer Fire Festival
-	[287] = true, -- "Coren Direbrew", Brewfest
-	[288] = true, -- "The Crown Chemical Co."; Love is in the Air
+	[285] = true,
+	[286] = true,
+	[287] = true,
+	[288] = true,
 
-	[26] = true, -- "Maraudon - Foulspore Cavern"
-	[272] = true, -- "Maraudon - The Wicked Grotto"
-	[273] = true, -- "Maraudon - Earth Song Falls"
+	[26] = true,
+	[272] = true,
+	[273] = true,
 
-	[30] = true, -- "Blackrock Depths - Detention Block"
-	[276] = true, -- "Blackrock Depths - Upper City"
+	[30] = true,
+	[276] = true,
 
-	[34] = true, -- "Dire Maul - Warpwood Quarter"
-	[36] = true, -- "Dire Maul - Capital Gardens"
-	[38] = true, -- "Dire Maul - Gordok Commons"
+	[34] = true,
+	[36] = true,
+	[38] = true,
 
-	[40] = true, -- "Stratholme - Main Gate"
-	[274] = true, -- "Stratholme - Service Entrance"
+	[40] = true,
+	[274] = true,
 
-	[32] = true, -- "Lower Blackrock Spire"
-	[330] = true, -- "Upper Blackrock Spire"
-	[860] = true, -- "Upper Blackrock Spire" (WoD)
+	[32] = true,
+	[330] = true,
+	[860] = true,
 }
 
 S.Multiple = {
-	[36296] = "The Crown Chemical Co.", -- "Apothecary Hummel"
-	[36565] = "The Crown Chemical Co.", -- "Apothecary Baxter"
-	[36272] = "The Crown Chemical Co.", -- "Apothecary Frye"
-	[77557] = "Iron Assembly", -- "Admiral Gar'an"
-	[77231] = "Iron Assembly", -- "Enforcer Sorka"
-	[77477] = "Iron Assembly", -- "Marak the Blooded"
+	[36296] = "The Crown Chemical Co.",
+	[36565] = "The Crown Chemical Co.",
+	[36272] = "The Crown Chemical Co.",
+	[77557] = "Iron Assembly",
+	[77231] = "Iron Assembly",
+	[77477] = "Iron Assembly",
 }
 
-S.MultipleCache = {} -- second table for tracking npc deaths
+S.MultipleCache = {}
 
-local multipleHash = {} -- hash table
+local multipleHash = {}
 for k, v in pairs(S.Multiple) do
 	multipleHash[v] = multipleHash[v] or {}
 	multipleHash[v][k] = true
@@ -330,17 +305,12 @@ function S.CheckMultiple(v)
 	return true
 end
 
----------------------
---- Instance Time ---
----------------------
-
 function KIT:StartData()
 	local serverTime = GetServerTime()
 	char.timeInstance = serverTime
 	char.startDate = date("%Y.%m.%d", serverTime)
 	char.startTime = date("%H:%M", serverTime)
 
-	-- reset so the broker timer can start counting again
 	S.LastInst = nil
 end
 
@@ -354,22 +324,16 @@ function KIT:ResetTime(isLeave)
 	end
 end
 
-------------
---- Time ---
-------------
-
 function KIT:SecondsTime(v)
 	return SecondsToTime(v, profile.TimeOmitSec, not profile.TimeAbbrev, profile.TimeMaxCount)
 end
 
 do
-	-- not capitalized
 	local D_SECONDS = strlower(D_SECONDS)
 	local D_MINUTES = strlower(D_MINUTES)
 	local D_HOURS = strlower(D_HOURS)
 	local D_DAYS = strlower(D_DAYS)
 
-	-- exception for German capitalization
 	if GetLocale() == "deDE" then
 		D_SECONDS = _G.D_SECONDS
 		D_MINUTES = _G.D_MINUTES
@@ -413,14 +377,9 @@ do
 			s = self:SecondsTime(v)
 			s = profile.TimeLowerCase and s:lower() or s
 		end
-		-- sanitize for SendChatMessage by removing any pipe characters
 		return b:GetText(b:SetText(s)) or ""
 	end
 end
-
----------------------------
---- Time Format Example ---
----------------------------
 
 do
 	local tday, thour, tmin, tsec = random(9), random(23), random(59), random(59)
@@ -434,10 +393,6 @@ do
 
 	S.TimeOmitZero = 3600*thour
 end
-
------------------
---- Stopwatch ---
------------------
 
 function S.StopwatchStart()
 	if S.pve[S.instance] then
@@ -460,13 +415,11 @@ function S.StopwatchEnd()
 end
 
 function S.StopwatchPause()
-	-- recalibrate
 	StopwatchTicker.timer = GetServerTime() - char.timeInstance
 	StopwatchTicker_Update()
 	Stopwatch_Pause()
 end
 
--- for when we're not sure whether the player is in an instance
 function S.IsStopwatch()
 	return (profile.Stopwatch and S.instance ~= "none" and not S.IsGarrison())
 end
@@ -477,15 +430,10 @@ function S.IsGarrison()
 	return S.garrison[instanceID]
 end
 
---------------------
---- Class Colors ---
---------------------
-
 S.classCache = setmetatable({}, {__index = function(t, k)
 	local colorTable = CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS
 	local color = colorTable and colorTable[k]
 	if not color then
-		-- fallback to white if colors are not available
 		rawset(t, k, "FFFFFF")
 		return "FFFFFF"
 	end
@@ -497,10 +445,6 @@ end})
 function KIT:WipeCache()
 	wipe(S.classCache)
 end
-
-------------
---- Rest ---
-------------
 
 function KIT:Zone()
 	return GetRealZoneText() or GetSubZoneText() or ZONE
@@ -515,24 +459,15 @@ function KIT:Finalize()
 		C_Timer.After(1, function() Screenshot() end)
 	end
 
-	-- pause LibDataBroker display
 	S.LastInst = (char.timeInstance > 0) and GetServerTime() - char.timeInstance
 
-	-- reset variables
 	self:ResetTime()
 	wipe(S.MultipleCache)
 end
 
---------------
---- Record ---
---------------
-
--- Save Instance Timer data
 function KIT:Record(zoneName)
-	-- tried recycling "party" and that was kinda dumb of me
 	local party = {}
 
-	-- don't record (party) members for raid instances
 	if not IsInRaid() and IsInGroup() then
 		for i = 1, GetNumSubgroupMembers() do
 			local name, realm = UnitName("party"..i)
@@ -556,19 +491,12 @@ function KIT:Record(zoneName)
 	})
 end
 
----------------
---- Replace ---
----------------
-
 local function ReplaceArgs(msg, args)
-	-- new random messages init as nil
 	if not msg then return "" end
 
 	for k in gmatch(msg, "%b<>") do
-		-- remove <>, make case insensitive
 		local s = strlower(gsub(k, "[<>]", ""))
 
-		-- escape special characters
 		s = gsub(args[s] or s, "(%p)", "%%%1")
 		k = gsub(k, "(%p)", "%%%1")
 
@@ -577,10 +505,6 @@ local function ReplaceArgs(msg, args)
 	wipe(args)
 	return msg
 end
-
---------------
---- Report ---
---------------
 
 local exampleTime = random(3600)
 
