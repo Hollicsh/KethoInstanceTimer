@@ -5,10 +5,7 @@ local ACD = LibStub("AceConfigDialog-3.0")
 local L = S.L
 
 local GetBattlefieldInstanceRunTime = GetBattlefieldInstanceRunTime
-
-	---------------------
-	--- LibDataBroker ---
-	---------------------
+local C_Timer = C_Timer
 
 local dataobject = {
 	type = "data source",
@@ -38,10 +35,6 @@ local dataobject = {
 	end,
 }
 
-	------------
-	--- Time ---
-	------------
-
 local function MilitaryTime(v)
 	local sec = floor(v) % 60
 	local minute = floor(v/60) % 60
@@ -54,18 +47,32 @@ local function MilitaryTime(v)
 	end
 end
 
-	-------------
-	--- Timer ---
-	-------------
+local brokerTicker
 
-C_Timer.NewTicker(1, function()
+local function UpdateBroker()
 	if S.pvp[S.instance] then -- no idea about arena
 		local bgTime = GetBattlefieldInstanceRunTime() or 0
 		dataobject.text = MilitaryTime(bgTime / 1000)
 	else
-		local timeInstance = KIT.db.char.timeInstance
-		dataobject.text = MilitaryTime(S.LastInst and S.LastInst or (timeInstance > 0 and GetServerTime() - timeInstance or 0))
+		local timeInstance = KIT.db and KIT.db.char and KIT.db.char.timeInstance or 0
+		local value = (S.LastInst and S.LastInst) or (timeInstance > 0 and GetServerTime() - timeInstance or 0)
+		dataobject.text = MilitaryTime(value)
 	end
-end)
+end
+
+function KIT:StartBrokerTicker()
+	-- don't start twice
+	if brokerTicker then return end
+	-- update immediately then start the 1s ticker
+	UpdateBroker()
+	brokerTicker = C_Timer.NewTicker(1, UpdateBroker)
+end
+
+function KIT:CancelBrokerTicker()
+	if brokerTicker then
+		brokerTicker:Cancel()
+		brokerTicker = nil
+	end
+end
 
 LibStub("LibDataBroker-1.1"):NewDataObject(NAME, dataobject)
