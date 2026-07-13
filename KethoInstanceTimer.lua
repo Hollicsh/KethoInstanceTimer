@@ -38,12 +38,13 @@ local args = S.args
 
 S.Events = {
 	"PLAYER_ENTERING_WORLD",
-	"COMBAT_LOG_EVENT_UNFILTERED",
 	"CHAT_MSG_SYSTEM",
 
 	"LFG_PROPOSAL_SUCCEEDED",
 	"LFG_COMPLETION_REWARD",
 	"SCENARIO_COMPLETED",
+	"CHALLENGE_MODE_COMPLETED",
+	"ENCOUNTER_END",
 }
 
 S.ClassicEvents = {
@@ -295,6 +296,7 @@ function KIT:StartData()
 	char.startTime = date("%H:%M", serverTime)
 
 	S.LastInst = nil
+	S.LastKillTime = nil
 end
 
 function KIT:ResetTime(isLeave)
@@ -441,13 +443,15 @@ function KIT:Finalize()
 		C_Timer.After(1, function() Screenshot() end)
 	end
 
-	S.LastInst = (char.timeInstance > 0) and GetServerTime() - char.timeInstance
+	local endTime = S.LastKillTime or GetServerTime()
+	S.LastInst = (char.timeInstance > 0) and endTime - char.timeInstance
 
 	self:ResetTime()
 	wipe(S.MultipleCache)
 end
 
-function KIT:Record(zoneName)
+function KIT:Record(zoneName, endTime)
+	endTime = endTime or GetServerTime()
 	local party = {}
 
 	if not IsInRaid() and IsInGroup() then
@@ -464,11 +468,11 @@ function KIT:Record(zoneName)
 	tinsert(char.TimeInstanceList, {
 		date = char.startDate,
 		start = char.startTime,
-		["end"] = date("%H:%M", GetServerTime()),
+		["end"] = date("%H:%M", endTime),
 		zone = zoneName or self:Zone(),
 		instanceType = S.instance,
 		difficulty = select(3, GetInstanceInfo()),
-		time = GetServerTime() - char.timeInstance,
+		time = endTime - char.timeInstance,
 		party = party,
 	})
 end
@@ -490,9 +494,9 @@ end
 
 local exampleTime = random(3600)
 
-function KIT:InstanceText(isPreview, name)
+function KIT:InstanceText(isPreview, name, endTime)
 	wipe(args)
-	local serverTime = GetServerTime()
+	local serverTime = endTime or GetServerTime()
 
 	if isPreview then
 		args.instance = "|cffA8A8FF"..self:Zone().."|r"

@@ -57,7 +57,10 @@ end
 
 function KIT:OnEnable()
 	for _, v in ipairs(S.isRetail and S.Events or S.ClassicEvents) do
-		self:RegisterEvent(v)
+		local ok, err = pcall(self.RegisterEvent, self, v)
+		if not ok then
+			geterrorhandler()(("%s: не удалось зарегистрировать %s — %s"):format(NAME, v, tostring(err)))
+		end
 	end
 
 	if CUSTOM_CLASS_COLORS then
@@ -150,7 +153,8 @@ function KIT:PLAYER_ENTERING_WORLD(event)
 		end
 
 	elseif (S.instance == "none" or S.IsGarrison()) and not IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
-		self:ResetTime(true)
+	self:FinalizePendingKill()
+	self:ResetTime(true)
 
 		if profile.Stopwatch then
 			S.StopwatchEnd()
@@ -189,6 +193,7 @@ local INSTANCE_RESET_SUCCESS = INSTANCE_RESET_SUCCESS:gsub("%%s", "")
 
 function KIT:CHAT_MSG_SYSTEM(event, msg)
 	if msg == ERR_LEFT_GROUP_YOU or msg == ERR_UNINVITE_YOU or strfind(msg, INSTANCE_RESET_SUCCESS) then
+		self:FinalizePendingKill()
 		self:ResetTime(true)
 
 		if profile.Stopwatch then
@@ -229,4 +234,26 @@ end
 
 function KIT:SCENARIO_COMPLETED(event)
 	self:SecondaryCompletion()
+end
+
+function KIT:ENCOUNTER_END(event, encounterID, encounterName, difficultyID, groupSize, success)
+	if success == 1 and char.timeInstance > 0 then
+		S.LastKillTime = GetServerTime()
+	end
+end
+
+function KIT:CHALLENGE_MODE_COMPLETED(event)
+	self:SecondaryCompletion()
+end
+
+function KIT:FinalizePendingKill()
+	if char.timeInstance > 0 and S.LastKillTime then
+		self:Record(nil, S.LastKillTime)
+
+		if profile[S.instance] then
+			self:Pour(self:InstanceText(nil, nil, S.LastKillTime))
+		end
+
+		self:Finalize()
+	end
 end
